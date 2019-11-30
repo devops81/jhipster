@@ -1,46 +1,72 @@
 pipeline {
-  agent any
+  agent none
   stages {
     stage('Build') {
+      agent {
+        docker {
+          image 'maven:3-alpine'
+          args '-v $HOME/jenkins/blueocean-host/.m2:/root/.m2:z -u root'
+        }
+
+      }
       steps {
-        sh 'echo Build'
+        sh 'mvn -B -DskipTests clean package'
+        stash(name: 'war', includes: 'target/**')
       }
     }
-
     stage('Backend') {
       parallel {
-        stage('Backend') {
+        stage('Unit') {
+          agent {
+            docker {
+              image 'maven:3-alpine'
+              args '-v $HOME/jenkins/blueocean-host/.m2:$HOME/.m2:z -u root'
+            }
+
+          }
           steps {
-            sh 'echo Backend'
+            unstash 'war'
+            sh 'mvn -B -DtestFailureIgnore test || exit 0'
+            junit '**/surefire-reports/**/*.xml'
           }
         }
-
         stage('Performance') {
-          steps {
-            sh 'echo Performance'
+          agent {
+            docker {
+              image 'maven:3-alpine'
+              args '-v $HOME/jenkins/blueocean-host/.m2:/root/.m2:z -u root'
+            }
+
           }
+          steps {
+            unstash 'war'
+            sh '# ./mvn -B gatling:execute'
+          }
+        }
+      }
+    }
+    stage('Front-end') {
+      agent {
+        docker {
+          image 'node:alpine'
         }
 
       }
-    }
-
-    stage('Frontend') {
       steps {
-        sh 'echo Frontend'
+        sh 'yarn install'
+        sh '# yarn global add gulp-cli'
+        sh '# gulp test'
       }
     }
-
     stage('Static Analysis') {
       steps {
-        sh 'echo Static analysis'
+        sh 'env'
       }
     }
-
     stage('Deploy') {
       steps {
-        sh 'echo Deploy'
+        sh 'env'
       }
     }
-
   }
 }

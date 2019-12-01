@@ -4,15 +4,16 @@ pipeline {
     stage('Build') {
       agent {
         docker {
+            
           image 'maven:3-alpine'
           args '-v $HOME/jenkins/blueocean-host/.m2:/root/.m2:z -u root'
         }
 
       }
       steps {
-          sh "sudo chmod 777 -R /var/lib/jenkins/"
-          sh "sudo rm -rf /var/lib/jenkins/workspace/jhipster_master"
-        sh "sudo mvn -B -DskipTests clean package"
+          sh "chmod 777 -R /var/lib/jenkins/"
+          sh "rm -rf /var/lib/jenkins/workspace/jhipster_master"
+        sh "mvn -B -DskipTests clean package"
         stash(name: 'war', includes: 'target/**')
       }
     }

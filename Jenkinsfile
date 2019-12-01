@@ -28,6 +28,7 @@ pipeline {
 
           }
           steps {
+               sh "chmod 777 -R /var/lib/jenkins/"
             unstash 'war'
             sh 'mvn -B -DtestFailureIgnore test || exit 0'
             junit '**/surefire-reports/**/*.xml'

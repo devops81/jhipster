@@ -5,7 +5,7 @@ pipeline {
       agent {
         docker {
           image 'maven:3-alpine'
-          args '-v $HOME/jenkins/blueocean-host/.m2:/root/.m2:z -u root'
+          args '-v $HOME/jenkins/blueocean-host/.m2:/root/.m2:z -u jenkins'
         }
 
       }
@@ -20,7 +20,7 @@ pipeline {
           agent {
             docker {
               image 'maven:3-alpine'
-              args '-v $HOME/jenkins/blueocean-host/.m2:$HOME/.m2:z -u root'
+              args '-v $HOME/jenkins/blueocean-host/.m2:$HOME/.m2:z -u jenkins'
             }
 
           }
@@ -34,7 +34,7 @@ pipeline {
           agent {
             docker {
               image 'maven:3-alpine'
-              args '-v $HOME/jenkins/blueocean-host/.m2:/root/.m2:z -u root'
+              args '-v $HOME/jenkins/blueocean-host/.m2:/root/.m2:z -u jenkins'
             }
 
           }

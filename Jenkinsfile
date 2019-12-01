@@ -11,7 +11,7 @@ pipeline {
       }
       steps {
           sh 'chmod 777 -R /var/lib/jenkins/'
-        sh 'sudo mvn -B -DskipTests clean package'
+        sh 'mvn -B -DskipTests clean package'
         stash(name: 'war', includes: 'target/**')
       }
     }
@@ -27,7 +27,7 @@ pipeline {
           }
           steps {
             unstash 'war'
-            sh 'sudo mvn -B -DtestFailureIgnore test || exit 0'
+            sh 'mvn -B -DtestFailureIgnore test || exit 0'
             junit '**/surefire-reports/**/*.xml'
           }
         }

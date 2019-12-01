@@ -10,7 +10,7 @@ pipeline {
 
       }
       steps {
-        sh 'mvn -B -DskipTests clean package'
+        sh 'sudo mvn -B -DskipTests clean package'
         stash(name: 'war', includes: 'target/**')
       }
     }
@@ -26,7 +26,7 @@ pipeline {
           }
           steps {
             unstash 'war'
-            sh 'mvn -B -DtestFailureIgnore test || exit 0'
+            sh 'sudo mvn -B -DtestFailureIgnore test || exit 0'
             junit '**/surefire-reports/**/*.xml'
           }
         }
@@ -65,7 +65,7 @@ pipeline {
     }
     stage('Deploy') {
       steps {
-        sh 'env'
+        sh 'sudo env'
       }
     }
   }

@@ -12,7 +12,7 @@ pipeline {
       }
       steps {
           sh "chmod 777 -R /var/lib/jenkins/"
-          sh "rm -rf /var/lib/jenkins/workspace/jhipster_master"
+         
         sh "mvn -B -DskipTests clean package"
         stash(name: 'war', includes: 'target/**')
       }

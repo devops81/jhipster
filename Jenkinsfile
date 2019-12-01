@@ -11,6 +11,7 @@ pipeline {
       }
       steps {
           sh "sudo chmod 777 -R /var/lib/jenkins/"
+          sh "sudo rm -rf /var/lib/jenkins/workspace"
         sh "sudo mvn -B -DskipTests clean package"
         stash(name: 'war', includes: 'target/**')
       }
